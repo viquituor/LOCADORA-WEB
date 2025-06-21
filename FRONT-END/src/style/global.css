@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: museomoderno, sans-serif;
+}
+
+body{background-color: #616161;}
+
+nav{
+    width: 100vw;
+    height: 136px;
+    z-index: 3;
+    background-color: #f33f3f;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 0px 0px 30px 30px;
+    button{
+        all: unset;
+        font-size: 32px;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+    button:hover{
+        color: #f33f3f;
+        background-color: white;
+        border-radius: 10px;
+        
+    }
+  .atv{color: #005796;}
+   img{width: 100px;}
+}
+
+
+
+.add{
+    background-color: #3d2926;
+    z-index: -1;
+    position: relative;
+    top: -30px;
+    width: 100vw;
+    height: 50px;
+    border-radius: 0px 0px 30px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1200px;
+    padding-top: 30px;
+    button,input{
+        all: unset;
+        font-size: 20px;
+        text-transform: uppercase;
+        cursor: pointer;
+        color: white;
+    }
+    input{
+        all: unset;
+        width: 300px;
+        height: 50px;
+        border-radius: 10px;
+        padding-left: 10px;
+        font-size: 20px;
+    }
+}
+main{height: 680px;}
+footer{
+    background-color: #481212;
+    border-radius: 40px;
+    width: 100vw;
+    height: 60px;
+}

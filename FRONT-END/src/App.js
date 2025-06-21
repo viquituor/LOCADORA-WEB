@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Locacao from './pages/locacao.js';
+import Locacao from './pages/Locacao.js';
 
 function App() {
   return (
