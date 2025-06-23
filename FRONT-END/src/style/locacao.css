@@ -1,10 +1,10 @@
 .Lista-loc{
     position: relative;
     top: -60px;
-    padding-top: 50px;
-    z-index: -2;
+    padding-top: 60px;
+    z-index: 1;
     width: 100vw;
-    height: 690px;
+    height: 700px;
     background-color: #005796;
     border-radius: 0 0 30px 30px;
 
@@ -19,26 +19,52 @@
         overflow: scroll;
         border-radius: 30px;
         border-collapse: separate;
-        border-spacing: 0;
+        border-spacing: 10px;
         background-color: #fff;
-        thead{tr{margin-bottom:15px; th{font-size: 20px;}}}
-        tbody{tr{margin-bottom:15px; background-color: #f33f3f; td{font-size: 18px;}}}
+        thead{tr{margin-bottom:15px; th{font-size: 25px;}}}
+        tbody{tr{margin-bottom:15px; background-color: #f33f3f; cursor: pointer; td{border-radius: 30px; font-size: 20px;}}}
     }
 
 }
 
 .add-loc{
     position: relative;
-    top: -60px;
-    padding-top: 50px;
-    z-index: -2;
-    width: 100vw;
-    height: 690px;
+    top: -110px;
+    padding-top: 20px;
+    z-index: 1;
+    width: 60vw;
+    height: 500px;
     background-color: #005796;
+    box-shadow: 1px 1px 20px 1px #fff;
     border-radius: 0 0 30px 30px;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center-top;
+    text-transform: uppercase;
+
+
+    form{
+        height: 550px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+
+        input,select,button{
+            background-color: #f33f3f;
+            text-align: center;
+            text-transform: uppercase;
+            width: 400px;
+            height: 50px;
+            border-radius: 30px;
+            font-size: 20px;
+        }
+        label{text-align: center;}
+        button{background-color: #fff;}
+        button:hover{background-color: #e0dddd;}
+
+    }
 }

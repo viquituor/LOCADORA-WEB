@@ -1,0 +1,128 @@
+.Lista-cli{
+    position: relative;
+    top: -60px;
+    z-index: 1;
+    width: 100vw;
+    height: 700px;
+    background-color: #005796;
+    border-radius: 0 0 30px 30px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    
+
+.cli-card{
+    width: 400px;
+    height: 80px;
+    background-color: #57491c;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+    border-radius: 30px;
+    border: 2px solid #f33f3f;
+    box-shadow: 5px 5px 20px 1px #9f9f9f;
+    p{font-size: 18px; letter-spacing: 3px;}
+
+}
+
+}
+
+.add-cli{
+    position: relative;
+    top: -110px;
+    padding-top: 20px;
+    z-index: 1;
+    width: 60vw;
+    height: 500px;
+    background-color: #005796;
+    box-shadow: 1px 1px 20px 1px #fff;
+    border-radius: 0 0 30px 30px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center-top;
+    text-transform: uppercase;
+
+
+    form{
+        height: 550px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+
+        input,select,button{
+            background-color: #f33f3f;
+            text-align: center;
+            text-transform: uppercase;
+            width: 400px;
+            height: 50px;
+            border-radius: 30px;
+            font-size: 20px;
+        }
+        label{text-align: center;}
+        button{background-color: #fff;}
+        button:hover{background-color: #e0dddd;}
+
+    }
+}
+
+.info-cli{
+    position: relative;
+    top: -110px;
+    padding-top: 20px;
+    z-index: 1;
+    width: 70vw;
+    height: 500px;
+    background-color: #005796;
+    box-shadow: 1px 1px 20px 1px #fff;
+    border-radius: 0 0 30px 30px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center-top;
+    gap: 60px;
+    text-transform: uppercase;
+    .card-info{
+        width: 70vw;
+        height: 400px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center-top;
+        justify-content: space-evenly;
+    }
+    .end{width: 1100px;}
+    button{
+        background-color: #3d2926;
+        color: white;
+        letter-spacing: 5px;
+        text-align: center;
+        text-transform: uppercase;
+        width: 300px;
+        height: 60px;
+        font-weight: 600;
+        border-radius: 30px;
+        font-size: 20px;
+        
+    }
+    label{
+        background-color: #9f9f9f;
+        width: 400px;
+        height: 70px;
+        border-radius: 30px;
+        text-align: center;
+        p{
+            font-size: 25px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+    }
+}

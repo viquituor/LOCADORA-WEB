@@ -1,0 +1,29 @@
+.Lista-vec{
+    position: relative;
+    top: -60px;
+    padding-top: 60px;
+    z-index: 1;
+    width: 100vw;
+    height: 700px;
+    background-color: #d69954;
+    border-radius: 0 0 30px 30px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center-top;
+
+    table{
+        text-align: center;
+        width: 90vw;
+        overflow: scroll;
+        border-radius: 30px;
+        border-collapse: separate;
+        border-spacing: 0px;
+        background-color: #005796;
+        color: white;
+        thead{tr{th{font-size: 25px;}}}
+        tbody{tr{background-color: #f33f3f; td{font-size: 20px;}}}
+    }
+
+}

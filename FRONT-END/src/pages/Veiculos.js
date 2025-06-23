@@ -1,57 +1,26 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { /* useEffect,*/ useState } from "react";
 import logo from "../img/car.png"; 
-import "../style/locacao.css";
+import "../style/veiculos.css";
 import "../style/global.css";
 import { Link, useNavigate } from 'react-router-dom';
 
-
-const Locacao = () => {
+const Veiculos = () => {
 
     const [ListaLocacao ,setListaLocacao] = useState(true);
     const [AddLocacao, setAddLocacao] = useState(false);
-    const [Locacao, setLocacoes] = useState([]);
+    const [categorias, setCategorias] = useState(false);
     const [busca, setBusca] = useState("");
     const navigate = useNavigate();
 
-     useEffect(() => {
-  const carregarLocacoes = async () => {
-    try {
-      
-      const response = await axios.get('http://localhost:3001/locacoes', {
-        timeout: 3000
-      });
-      
-      console.log("Dados recebidos:", response.data);
-      setLocacoes(response.data);
-    } catch (error) {
-      console.error("Erro completo:", {
-        message: error.message,
-        status: error.response?.status,
-        data: error.response?.data
-      });
-    }
-  };
-  
-  carregarLocacoes();
-}, []);
 
-const locacaoFiltradas = Locacao.filter(loc =>
-        loc.nome.toLowerCase().includes(busca.toLowerCase()) ||
-        loc.situacao.toLowerCase().includes(busca.toLowerCase()) ||
-        loc.data_inicio.toString().includes(busca.toLowerCase()) ||
-        loc.data_termino.toString().includes(busca.toLowerCase()) ||
-        loc.habilitacao_cliente.toString().includes(busca.toLowerCase())||
-        loc.modelo.toString().includes(busca.toLowerCase())
-        );
   return (
     <div className="container">
       <header>
         <nav>
         <Link to="/"><img src={logo} alt="logo"></img></Link>
         
-            <button onClick={() => navigate(`/`, {replace: true})} className="atv">locação</button>
-            <button onClick={() => navigate(`/Veiculos`, {replace: true})}>veiculos</button>
+            <button onClick={() => navigate(`/`, {replace: true})} >locação</button>
+            <button onClick={() => navigate(`/Veiculos`, {replace: true})} className="atv">veiculos</button>
             <button onClick={() => navigate(`/Clientes`, {replace: true})}>clientes</button>
         
         <Link to="/"><img src={logo} alt="logo"></img></Link>
@@ -64,27 +33,16 @@ const locacaoFiltradas = Locacao.filter(loc =>
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
                     />
+            <button onClick={() => {setCategorias(true);setListaLocacao(false)}}>CATEGORIAS</button>
             <button onClick={() => {setAddLocacao(true);setListaLocacao(false)}}>ADICIONAR</button>
         </div>
       </header>
       <main>
                 {ListaLocacao && (
-                    <div className="Lista-loc">
+                    <div className="Lista-vec">
                         <table>
-                            <thead><tr><th>ID</th><th>CLIENTE</th><th>HABILITAÇÃO</th><th>DATA INICIO</th><th>DATA FIM</th><th>SITUAÇÃO</th><th>MODELO</th><th>MARCA</th><th>PLACA</th></tr></thead>
-                            <tbody>{locacaoFiltradas.map((loc) => (
-                                    <tr key={loc.cod_loc}> 
-                                        <td>{loc.cod_loc}</td>
-                                        <td>{loc.nome}</td>
-                                        <td>{loc.habilitacao_cliente}</td>
-                                        <td>{new Date(loc.data_inicio).toLocaleDateString()}</td>
-                                        <td>{loc.data_termino? new Date(loc.data_termino).toLocaleDateString() : loc.data_termino || "Em Aberto"}</td>
-                                        <td>{loc.situacao}</td>
-                                        <td>{loc.modelo}</td>
-                                        <td>{loc.marca}</td>
-                                        <td>{loc.placa}</td>
-                                        </tr>
-                            ))}</tbody>
+                            <thead><tr><th>ID</th><th>PLACA</th><th>CHASSI</th><th>MARCA</th><th>MODELO</th><th>ANO</th><th>COR</th><th>CATEGORIA</th><th>RECEITA</th></tr></thead>
+                            <tbody><tr></tr></tbody>
 
                         </table>
                     </div>
@@ -120,8 +78,11 @@ const locacaoFiltradas = Locacao.filter(loc =>
                         </form>
                     </div>
                 )}
-
-
+                {categorias && (
+                    <div className="categorias">
+                    
+                    </div>
+                )}
       </main>
 
       <footer>
@@ -131,4 +92,4 @@ const locacaoFiltradas = Locacao.filter(loc =>
   );
 };
 
-export default Locacao;
+export default Veiculos;
