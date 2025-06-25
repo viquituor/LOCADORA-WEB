@@ -8,4 +8,4 @@ router.post('/veiculo', veiculoController.addVeiculo);
 router.delete('/veiculo/:chassi', veiculoController.delVeiculo);
 router.put('/veiculo/:chassi', veiculoController.editVeiculo);
 
-module.exports = router;
+module.exports = router; 

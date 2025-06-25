@@ -207,8 +207,7 @@ const Veiculos = () => {
                                                                                                                 cor: '',
                                                                                                                 categoria: '',
                                                                                                                 preco_diaria: '',
-                                                                                                                receita_total: ''
-                                                                                                                                    });}}>ADICIONAR</button>
+                                                                                                                receita_total: ''});}}>ADICIONAR</button>
         </div>
       </header>
       <main>
