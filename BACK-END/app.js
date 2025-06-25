@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
 // Usar o router
 app.use('/', locacaoRouter);
 app.use('/', clienteRouter);
+app.use('/', veiculoRouter);
 
 
 

@@ -1,4 +1,5 @@
-import React, { /* useEffect,*/ useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import logo from "../img/car.png"; 
 import "../style/veiculos.css";
 import "../style/global.css";
@@ -9,9 +10,22 @@ const Veiculos = () => {
     const [ListaLocacao ,setListaLocacao] = useState(true);
     const [AddLocacao, setAddLocacao] = useState(false);
     const [categorias, setCategorias] = useState(false);
+    const [veiculos, setVeiculos] = useState([]);
     const [busca, setBusca] = useState("");
     const navigate = useNavigate();
 
+
+     useEffect(() => {
+         const carregarVeiculos = async () => {
+            try {
+              const response = await axios.get('http://localhost:3001/veiculo');
+              setVeiculos(response.data);
+            } catch (error) {
+              console.error("Erro ao carregar veículos:", error);
+            }
+         };
+         carregarVeiculos();
+     }, []);
 
   return (
     <div className="container">
@@ -41,8 +55,20 @@ const Veiculos = () => {
                 {ListaLocacao && (
                     <div className="Lista-vec">
                         <table>
-                            <thead><tr><th>ID</th><th>PLACA</th><th>CHASSI</th><th>MARCA</th><th>MODELO</th><th>ANO</th><th>COR</th><th>CATEGORIA</th><th>RECEITA</th></tr></thead>
-                            <tbody><tr></tr></tbody>
+                            <thead><tr><th>PLACA</th><th>CHASSI</th><th>MARCA</th><th>MODELO</th><th>ANO</th><th>COR</th><th>CATEGORIA</th><th>valor diaria</th><th>RECEITA</th></tr></thead>
+                            <tbody>{veiculos.map(veiculo => (
+                                <tr key={veiculo.chassi}>
+                                <td >{veiculo.placa}</td>
+                                <td>{veiculo.chassi}</td>
+                                <td>{veiculo.marca}</td>
+                                <td>{veiculo.modelo}</td>
+                                <td>{veiculo.ano}</td>
+                                <td>{veiculo.cor}</td>
+                                <td>{veiculo.categoria}</td>
+                                <td>R$ {veiculo.preco_diaria}</td>
+                                <td>R$ {veiculo.receita_total}</td>
+                                </tr>
+                            ))}</tbody>
 
                         </table>
                     </div>

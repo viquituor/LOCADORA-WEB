@@ -143,7 +143,12 @@ const Clientes = () => {
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
                     />
-            <button onClick={() => {setAddcli(true);setListacli(false)}}>ADICIONAR</button>
+            <button onClick={() => {setFormData({
+                nome: '',
+                habilitacao: '',
+                endereco: '',
+                data_nascimento: ''
+              });setAddcli(true);setListacli(false)}}>ADICIONAR</button>
         </div>
       </header>
       <main>
