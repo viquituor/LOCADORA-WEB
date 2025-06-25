@@ -126,3 +126,45 @@
         }
     }
 }
+
+.edit-cli{
+    position: relative;
+    top: -110px;
+    padding-top: 20px;
+    z-index: 1;
+    width: 60vw;
+    height: 500px;
+    background-color: #3d2926;
+    box-shadow: 1px 1px 20px 1px #fff;
+    border-radius: 0 0 30px 30px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center-top;
+    text-transform: uppercase;
+
+
+    form{
+        height: 550px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+
+        input,select,button{
+            background-color: #f33f3f;
+            text-align: center;
+            text-transform: uppercase;
+            width: 400px;
+            height: 50px;
+            border-radius: 30px;
+            font-size: 20px;
+        }
+        label{text-align: center;}
+        button{background-color: #fff;}
+        button:hover{background-color: #e0dddd;}
+
+    }
+}

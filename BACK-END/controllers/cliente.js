@@ -74,3 +74,40 @@ exports.delcli = async (req, res, next) => {
     });
   }
 };
+
+exports.editcli = async (req, res, next) => {
+ try {
+        const { habilitacao } = req.params;
+        
+        if (!req.body.habilitacao || !req.body.nome || !req.body.data_nascimento || !req.body.endereco) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Campos obrigatórios faltando" 
+            });
+        }
+
+        if (!req.body.habilitacao.match(/^\d{11}$/)) {
+            return res.status(400).json({ 
+                success: false,
+                error: "Habilitação deve conter 11 números" 
+            });
+        }
+
+        const result = await cliente.editcli(req.body, habilitacao);
+        
+        res.status(201).json({
+            success: true,
+            id: result.id,
+            message: "Cliente atualizado com sucesso!"
+        });
+        
+    } catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({
+                success: false,
+                error: "Habilitação já cadastrada no sistema"
+            });
+        }
+        next(err);
+    }
+};

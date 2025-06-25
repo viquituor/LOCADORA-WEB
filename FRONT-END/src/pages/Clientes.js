@@ -17,6 +17,7 @@ const Clientes = () => {
     const [Listacli ,setListacli] = useState(true);
     const [Addcli, setAddcli] = useState(false);
     const [Infocli, setInfocli] = useState(false);
+    const [editcli, setEditcli] = useState(false);
     const [Cliselecionado, setCliselecionado] = useState(null);
     const [Clientes, setClientes] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ const Clientes = () => {
     const navigate = useNavigate();
 
 
-        useEffect(() => {
+    useEffect(() => {
         const carregarClientes = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/clientes');
@@ -41,14 +42,15 @@ const Clientes = () => {
             }
         };
         carregarClientes();
-      }, []);
 
-        const handleChange = (e) => {
+    }, []);
+
+    const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-      };
+    };
 
-        const criarCliente = async (e) => {
+    const criarCliente = async (e) => {
             e.preventDefault();
             setLoading(true);
             try {
@@ -72,9 +74,9 @@ const Clientes = () => {
             } finally {
               setLoading(false);
             }
-      };
+    };
 
-      const excluirCliente = async (habilitacao) => {
+    const excluirCliente = async (habilitacao) => {
   try {
     const confirmacao = window.confirm("Tem certeza que deseja excluir este cliente?");
     if (!confirmacao) return;
@@ -93,7 +95,32 @@ const Clientes = () => {
   } catch (error) {
     alert(error.response?.data?.error || "Erro ao excluir cliente");
   }
-};
+    };
+
+    const editarCliente = async (e,habilitacao) =>{
+      e.preventDefault();
+      setLoading(true);
+      try {
+        if (!formData.habilitacao.match(/^[0-9]{11}$/)) {
+                throw new Error("Habilitação deve conter 11 dígitos");
+              }
+         await axios.put(`http://localhost:3001/clientes/${Cliselecionado.habilitacao}`,{...formData});
+              alert("Cliente Atualizado!");
+              setEditcli(false);
+              setListacli(true);
+              const res = await axios.get(`http://localhost:3001/clientes`);
+              setClientes(res.data);
+              setFormData({
+                nome: '',
+                habilitacao: '',
+                endereco: '',
+                data_nascimento: ''
+              });
+      } catch (error) {
+        setError(error.response?.data?.error || error.message);
+      }finally {
+        setLoading(false);
+      }};
 
 
   return (
@@ -206,10 +233,67 @@ const Clientes = () => {
                             endereço <br/>
                             <p>{Cliselecionado.endereco}</p>
                         </label>
-                        <button className="editar">EDITAR</button>
+                        <button className="editar" onClick={() => {setEditcli(true); setInfocli(false);setFormData({
+                        ...Cliselecionado,data_nascimento: Cliselecionado.data_nascimento.split('T')[0]});}}>EDITAR</button>
                         <button className="voltar" onClick={() => {setInfocli(false);setListacli(true)} }>VOLTAR</button>
                         <button className="deletar"onClick={() => excluirCliente(Cliselecionado.habilitacao)} >EXCLUIR</button>
                         </div>
+                    </div>
+                )}
+                {editcli && Cliselecionado && (
+                    <div className="edit-cli">
+                        <h2>EDITAR CLIENTE</h2>
+                        <form onSubmit={editarCliente}>
+                            <label>
+                                Nome <br/>
+                            <input
+                            required
+                            type="text"
+                            name="nome"
+                            placeholder="Nome"
+                            value={formData.nome}
+                            onChange={handleChange}
+                            />
+                            </label>
+                            <label>
+                                data de nascimento <br/>
+                            <input
+                            required
+                            type="date"
+                            name="data_nascimento"
+                            value={formData.data_nascimento}
+                            onChange={handleChange}
+                                />
+                            </label>
+
+                            <label>
+                                habilitação<br/>
+                            <input
+                            required
+                            type="text"
+                            name="habilitacao"
+                            placeholder="habilitação"
+                            value={formData.habilitacao}
+                            onChange={handleChange}
+                            />
+                            </label>
+
+                            <label> 
+                                endereço <br/>
+                            <input
+                            required
+                            type="text"
+                            name="endereco"
+                            placeholder="endereco"
+                            value={formData.endereco}
+                            onChange={handleChange}
+                                />
+                            </label>
+                            
+                            <button className="voltar" onClick={() => {setEditcli(false);setListacli(true)}}>VOLTAR</button>
+                            <button className="salvar" type="submit" disabled={loading} >{loading ? "SALVANDO..." : "SALVAR"}</button>
+                            {error && <button className="error-message">{error}</button>}
+                        </form>
                     </div>
                 )}
 
