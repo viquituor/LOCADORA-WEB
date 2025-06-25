@@ -92,6 +92,7 @@ footer{
     height: 66px;
 }
 
+button{cursor: pointer;}
 .salvar:hover{color: #218f52;}
 .voltar:hover{color: #b6786f;}
 .deletar:hover{color: #ff4e21;}

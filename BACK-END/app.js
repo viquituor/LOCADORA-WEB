@@ -3,6 +3,7 @@ const cors = require('cors');
 const locacaoRouter = require('./routes/locacao.js');
 const clienteRouter = require('./routes/cliente.js');
 const veiculoRouter = require('./routes/veiculo.js');
+const categoriasRouter = require('./routes/categorias.js');
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 app.use('/', locacaoRouter);
 app.use('/', clienteRouter);
 app.use('/', veiculoRouter);
+app.use('/', categoriasRouter);
 
 
 
