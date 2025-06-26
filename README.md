@@ -99,23 +99,23 @@ Isso inicia Frontend (React) e Backend (Node.js) ao mesmo tempo usando concurren
 
 ## 🛠 Estrutura do Projeto
 
-´´´text
-locadora-web/
-├── FRONT-END/           # Aplicação React
-│   ├── src/
-│   │   ├── pages/       # Telas do sistema (Clientes, Veículos, Locações)
-│   │   ├── styles/      # CSS modularizado
-│   │   └── App.js       # Rotas principais
-│   └── package.json
+```bash
+📦 **locadora-web/**
+├── 📂 **FRONT-END/**           *→ Aplicação React*
+│   ├── 📂 src/
+│   │   ├── 📂 pages/       *→ Telas do sistema (Clientes, Veículos, Locações)*
+│   │   ├── 📂 styles/      *→ CSS modularizado*
+│   │   └── 📄 App.js       *→ Rotas principais*
+│   └── 📄 package.json
 │
-├── BACK-END/            # API Node.js
-│   ├── routes/          # Rotas da API
-│   ├── models/          # Modelos do banco de dados
-│   ├── config/          # Configurações (banco de dados)
-│   └── app.js           # Servidor principal
+├── 📂 **BACK-END/**            *→ API Node.js*
+│   ├── 📂 routes/          *→ Rotas da API*
+│   ├── 📂 models/          *→ Modelos do banco de dados*
+│   ├── 📂 config/          *→ Configurações (banco de dados)*
+│   └── 📄 app.js           *→ Servidor principal*
 │
-└── package.json         # Script para iniciar ambos (front + back)
-´´´
+└── 📄 package.json         *→ Script para iniciar ambos (front + back)*
+```
 
 ## 📌 Observações
 
