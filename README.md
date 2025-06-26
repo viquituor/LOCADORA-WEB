@@ -56,7 +56,7 @@ cd BACK-END
 npm run dev  # Inicia com nodemon (reload automático)
 ```
 
-Acesse a API em: `http://localhost:3001`
+Acesse a API em: <http://localhost:3001>
 
 #### Frontend (React)
 
@@ -65,7 +65,7 @@ cd FRONT-END
 npm start
 ```
 
-Acesse o sistema em: `http://localhost:3000`
+Acesse o sistema em: <http://localhost:3000>
 
 ### Opção 2: Iniciar ambos simultaneamente (recomendado)
 
