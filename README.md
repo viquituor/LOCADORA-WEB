@@ -99,7 +99,6 @@ Isso inicia Frontend (React) e Backend (Node.js) ao mesmo tempo usando concurren
 
 ## 🛠 Estrutura do Projeto
 
-```bash
 📦 **locadora-web/**
 ├── 📂 **FRONT-END/**           *→ Aplicação React*
 │   ├── 📂 src/
@@ -115,7 +114,6 @@ Isso inicia Frontend (React) e Backend (Node.js) ao mesmo tempo usando concurren
 │   └── 📄 app.js           *→ Servidor principal*
 │
 └── 📄 package.json         *→ Script para iniciar ambos (front + back)*
-```
 
 ## 📌 Observações
 
