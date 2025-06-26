@@ -14,16 +14,19 @@ Git (opcional)
 
 ### 1. Clone o repositório (ou baixe os arquivos)
 
-bash
+```bash
 git clone https://github.com/seu-usuario/locadora-web.git
 cd locadora-web
+```
 
 ### 2. Configure o Backend
 
-Instale as dependências:
-bash
+#### Instale as dependências - Backend
+
+```bash
 cd BACK-END
 npm install
+```
 
 #### Configure o banco de dados
 
@@ -35,10 +38,12 @@ Edite o arquivo config/database.js com suas credenciais do MySQL.
 
 ### 3. Configure o Frontend
 
-Instale as dependências:
-bash
+#### Instale as dependências - Frontend
+
+```bash
 cd FRONT-END
 npm install
+```
 
 ## ⚙️ Iniciando o Sistema
 
@@ -46,35 +51,51 @@ npm install
 
 #### Backend (Node.js)
 
-bash
+```bash
 cd BACK-END
 npm run dev  # Inicia com nodemon (reload automático)
-Acesse a API em: http://localhost:3001
+Acesse a API em: `http://localhost:3001`
+```
 
 #### Frontend (React)
 
-bash
+```bash
 cd FRONT-END
 npm start
-Acesse o sistema em: http://localhost:3000
+Acesse o sistema em: `http://localhost:3000`
+```
 
 ### Opção 2: Iniciar ambos simultaneamente (recomendado)
 
-bash
+```bash
 npm run dev  # Execute na raiz do projeto
 Isso inicia Frontend (React) e Backend (Node.js) ao mesmo tempo usando concurrently.
 
+```
+
 ## 🌐 Endpoints da API (Backend)
 
-Rota	Método	Descrição
-/clientes	GET	Lista todos os clientes
-/clientes	POST	Cadastra um novo cliente
-/veiculo	GET	Lista todos os veículos
-/veiculo	POST	Cadastra um novo veículo
-/locacoes	GET	Lista todas as locações
-/locacoes/encerrar	PUT	Encerra uma locação
-/categorias	GET	Lista categorias de veículos
-
+|Rota | Método | Descrição|
+|-----|--------|----------|
+|/clientes | GET | Lista todos os clientes |
+|/clientes | POST | Cadastra um novo cliente |
+|/clientes/:habilitacao | PUT | Edita dados de um cliente |
+|/clientes/:habilitacao | DELETE | Remove um cliente |
+||||
+|/veiculo | GET | Lista todos os veículos |
+|/veiculo | POST | Cadastra um novo veículo |
+|/veiculo/:chassi | PUT | Edita dados de um veículo |
+|/veiculo/:chassi | DELETE | Remove um veículo |
+||||
+|/locacoes | GET | Lista todas as locações |
+|/locacoes | POST | Realiza uma nova locação |
+|/locacoes/encerrar | PUT | Encerra uma locação |
+|/locacoes/:id_locacao | PUT | Edita dados de uma locação |
+|/locacoes/:id_locacao | DELETE | Remove uma locação |
+||||
+|/categorias | GET | Lista todos as categorias |
+|/categoria | POST| Cadastra uma nova categoria |
+|/categoria/:id_categoria | DELETE | Deleta uma categoria |
 
 ## 🛠 Estrutura do Projeto
 
@@ -93,14 +114,16 @@ locadora-web/
 │   └── app.js           # Servidor principal
 │
 └── package.json         # Script para iniciar ambos (front + back)
-📌 Observações
-O backend roda na porta 3001 (API REST).
 
-O frontend roda na porta 3000 (React App).
+## 📌 Observações
 
-Certifique-se de que o MySQL está rodando antes de iniciar o backend.
+### O backend roda na porta 3001 (API REST)
 
-Use Ctrl+C para encerrar os servidores.
+### O frontend roda na porta 3000 (React App)
+
+### Certifique-se de que o MySQL está rodando antes de iniciar o backend
+
+### Use Ctrl+C para encerrar os servidores
 
 ## 🔧 Solução de Problemas
 
