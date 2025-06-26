@@ -99,6 +99,7 @@ Isso inicia Frontend (React) e Backend (Node.js) ao mesmo tempo usando concurren
 
 ## 🛠 Estrutura do Projeto
 
+´´´text
 locadora-web/
 ├── FRONT-END/           # Aplicação React
 │   ├── src/
@@ -114,6 +115,7 @@ locadora-web/
 │   └── app.js           # Servidor principal
 │
 └── package.json         # Script para iniciar ambos (front + back)
+´´´
 
 ## 📌 Observações
 
