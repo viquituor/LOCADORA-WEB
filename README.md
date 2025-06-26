@@ -101,7 +101,8 @@ Isso inicia Frontend (React) e Backend (Node.js) ao mesmo tempo usando concurren
 
 ```bash
 📦 **locadora-web/**
-├── 📂 **FRONT-END/**           *→ Aplicação React*
+├── 📂 **BANCO DE DADOS**    *→documentos do banco de dados*
+├── 📂 **FRONT-END/**        *→ Aplicação React*
 │   ├── 📂 src/
 │   │   ├── 📂 pages/       *→ Telas do sistema (Clientes, Veículos, Locações)*
 │   │   ├── 📂 styles/      *→ CSS modularizado*
