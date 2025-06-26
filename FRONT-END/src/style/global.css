@@ -14,7 +14,7 @@ body{background-color: #616161; width: 100vw; height: 100vh;}
 nav{
     position: relative;
     width: 100vw;
-    height: 130px;
+    height: 13vh;
     z-index: 5;
     background-color: #f33f3f;
     color: white;
@@ -44,7 +44,7 @@ nav{
     position: relative;
     top: -30px;
     width: 100vw;
-    height: 50px;
+    height: 5vh;
     border-radius: 0px 0px 30px 30px;
     display: flex;
     align-items: center;
@@ -73,7 +73,7 @@ nav{
 }
 
 main{
-    height: 700px;
+    height: 74vh;
     position: relative;
     padding-top: 50px;
     top: -60px;
@@ -89,7 +89,7 @@ footer{
     background-color: #481212;
     border-radius: 40px;
     width: 100vw;
-    height: 66px;
+    height: 7vh;
 }
 
 button{cursor: pointer;}

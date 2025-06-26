@@ -4,7 +4,7 @@
     padding-top: 60px;
     z-index: 1;
     width: 100vw;
-    height: 700px;
+    height: 74vh;
     background-color: #005796;
     border-radius: 0 0 30px 30px;
 
@@ -33,7 +33,7 @@
     padding-top: 20px;
     z-index: 1;
     width: 40vw;
-    height: 500px;
+    height: 55vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;
     border-radius: 0 0 30px 30px;
@@ -75,7 +75,7 @@
     padding-top: 20px;
     z-index: 1;
     width: 50vw;
-    height: 500px;
+    height: 60vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;
     border-radius: 0 0 30px 30px;
@@ -130,7 +130,7 @@
     padding-top: 20px;
     z-index: 1;
     width: 30vw;
-    height: 400px;
+    height: 45vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;
     border-radius: 0 0 30px 30px;
@@ -171,7 +171,7 @@
     padding-top: 20px;
     z-index: 1;
     width: 70vw;
-    height: 500px;
+    height: 55vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;
     border-radius: 0 0 30px 30px;

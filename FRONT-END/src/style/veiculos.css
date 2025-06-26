@@ -4,7 +4,7 @@
     padding-top: 60px;
     z-index: 1;
     width: 100vw;
-    height: 700px;
+    height: 72vh;
     background-color: #d69954;
     border-radius: 0 0 30px 30px;
 
@@ -128,7 +128,7 @@ form{
     padding-top: 20px;
     z-index: 1;
     width: 60vw;
-    height: 500px;
+    height: 64vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;
     border-radius: 0 0 30px 30px;
