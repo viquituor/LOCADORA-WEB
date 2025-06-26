@@ -59,3 +59,56 @@ exports.encerrarLocacao = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.deletarLocacao = async (req, res, next) => {
+  try {
+    console.log("Controller: Deletando locação...");
+    const { cod_loc } = req.params;
+    const locacaoDeletada = await Locacao.deletar(cod_loc);
+
+    if (!locacaoDeletada) {
+      return res.status(404).json({ message: 'Locação não encontrada' });
+    }
+
+    console.log("Controller: Locação deletada com sucesso:", locacaoDeletada);
+    res.status(200).json(locacaoDeletada);
+  } catch (err) {
+    console.error("Controller - Erro ao deletar locação:", err);
+    next(err);
+  }
+};
+
+exports.atualizarLocacao = async (req, res, next) => {
+  try {
+    console.log("Controller: Atualizando locação...");
+    const { cod_loc } = req.params;
+    const { chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao } = req.body;
+
+    if (!cod_loc || !chassi_veiculo || !habilitacao_cliente || !data_inicio || !situacao) {
+      return res.status(400).json({ message: 'Dados incompletos para atualizar locação' });
+    }
+
+    // Validação adicional para data_termino quando situacao for "Finalizada"
+    if (situacao === 'Finalizada' && !data_termino) {
+      return res.status(400).json({ message: 'Data de término é obrigatória para locações finalizadas' });
+    }
+
+    const locacaoAtualizada = await Locacao.atualizar(cod_loc, {
+      chassi_veiculo,
+      habilitacao_cliente,
+      data_inicio,
+      data_termino,
+      situacao
+    });
+
+    if (!locacaoAtualizada) {
+      return res.status(404).json({ message: 'Locação não encontrada' });
+    }
+
+    console.log("Controller: Locação atualizada com sucesso:", locacaoAtualizada);
+    res.status(200).json(locacaoAtualizada);
+  } catch (err) {
+    console.error("Controller - Erro ao atualizar locação:", err);
+    next(err);
+  }
+};

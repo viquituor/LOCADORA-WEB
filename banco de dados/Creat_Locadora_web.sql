@@ -41,7 +41,7 @@ CREATE TABLE Locacao (
   cod_loc SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, -- Chave primária essencial para identificar a locação
   data_inicio DATE NOT NULL,
   data_termino DATE, 
-  situacao ENUM('ABERTA','ENCERRADA') NOT NULL DEFAULT 'ABERTA',
+  situacao ENUM('EM ABERTO','ENCERRADA') NOT NULL DEFAULT 'EM ABERTO',
   habilitacao_cliente CHAR(11),
   chassi_veiculo CHAR(17),
   

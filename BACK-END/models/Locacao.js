@@ -50,7 +50,7 @@ class Locacao {
       console.log("Model: Encerrando locação...");
       const [result] = await pool.query(`
         UPDATE locacao
-        SET data_termino = ?, situacao = 'Finalizada'
+        SET data_termino = ?, situacao = 'ENCERRADA'
         WHERE cod_loc = ?
       `, [data_termino, cod_loc]);
       
@@ -60,9 +60,54 @@ class Locacao {
       }
       
       console.log("Model: Locação encerrada com sucesso:", cod_loc);
-      return { cod_loc, data_termino, situacao: 'Finalizada' };
+      return { cod_loc, data_termino, situacao: 'ENCERRADA' };
     } catch (err) {
       console.error("Model - Erro ao encerrar locação:", err);
+      throw err;
+    }
+  }
+
+  static async deletar(cod_loc) {
+    try {
+      console.log("Model: Deletando locação...");
+      const [result] = await pool.query(`
+        DELETE FROM locacao
+        WHERE cod_loc = ?
+      `, [cod_loc]);
+      
+      if (result.affectedRows === 0) {
+        console.warn("Model: Nenhuma locação encontrada para deletar com cod_loc:", cod_loc);
+        return null;
+      }
+      
+      console.log("Model: Locações deletada com sucesso:", cod_loc);
+      return { cod_loc };
+    } catch (err) {
+      console.error("Model - Erro ao deletar locação:", err);
+      throw err;
+    }
+  }
+
+  static async atualizar(cod_loc, dados) {
+    try {
+      console.log("Model: Atualizando locação...");
+      const { chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao } = dados;
+      
+      const [result] = await pool.query(`
+        UPDATE locacao
+        SET chassi_veiculo = ?, habilitacao_cliente = ?, data_inicio = ?, data_termino = ?, situacao = ?
+        WHERE cod_loc = ?
+      `, [chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao, cod_loc]);
+      
+      if (result.affectedRows === 0) {
+        console.warn("Model: Nenhuma locação encontrada para atualizar com cod_loc:", cod_loc);
+        return null;
+      }
+      
+      console.log("Model: Locações atualizada com sucesso:", cod_loc);
+      return { cod_loc, ...dados };
+    } catch (err) {
+      console.error("Model - Erro ao atualizar locação:", err);
       throw err;
     }
   }

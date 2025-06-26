@@ -68,3 +68,151 @@
 
     }
 }
+
+.info-loc{
+    position: relative;
+    top: -110px;
+    padding-top: 20px;
+    z-index: 1;
+    width: 50vw;
+    height: 500px;
+    background-color: #005796;
+    box-shadow: 1px 1px 20px 1px #fff;
+    border-radius: 0 0 30px 30px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    text-align: center;
+    text-transform: uppercase;
+    h2{width: 100%;}
+    P{
+        width: 15vw;
+        background-color: #f33f3f;
+        color: #fff;
+        border-radius: 30px;
+        font-size: 20px;
+        padding: 10px;
+}
+         strong{
+            color: #005796;
+            font-size: 20px;}
+        input,select,button{
+            background-color: #f33f3f;
+            text-align: center;
+            text-transform: uppercase;
+            width: 400px;
+            height: 50px;
+            border-radius: 30px;
+            font-size: 20px;
+        }
+        .botoes{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+        label{text-align: center;}
+        button{width: 300px; background-color: #fff;}
+        button:hover{background-color: #909090;}
+
+    
+}
+
+.encerrar-loc{
+    position: relative;
+    top: -160px;
+    padding-top: 20px;
+    z-index: 1;
+    width: 30vw;
+    height: 400px;
+    background-color: #005796;
+    box-shadow: 1px 1px 20px 1px #fff;
+    border-radius: 0 0 30px 30px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+
+    form{
+        height: 550px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 70px;
+
+        input,select,button{
+            background-color: #f33f3f;
+            text-align: center;
+            text-transform: uppercase;
+            width: 400px;
+            height: 50px;
+            border-radius: 30px;
+            font-size: 20px;
+        }
+        label{text-align: center;}
+        button{background-color: #fff;}
+        button:hover{background-color: #e0dddd;}
+
+    }
+}
+
+.edit-loc{
+    position: relative;
+    top: -110px;
+    padding-top: 20px;
+    z-index: 1;
+    width: 70vw;
+    height: 500px;
+    background-color: #005796;
+    box-shadow: 1px 1px 20px 1px #fff;
+    border-radius: 0 0 30px 30px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center-top;
+    text-transform: uppercase;
+
+
+    form{
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+
+        input,select,button{
+            background-color: #f33f3f;
+            color: #005796;
+            text-align: center;
+            text-transform: uppercase;
+            width: 400px;
+            height: 50px;
+            border-radius: 30px;
+            font-size: 20px;
+        }
+        .botoes{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+        label{text-align: center;}
+        button{background-color: #fff;}
+        button:hover{background-color: #e0dddd;}
+
+    }
+}

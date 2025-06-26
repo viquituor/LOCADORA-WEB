@@ -39,7 +39,6 @@ const Veiculos = () => {
         }));
     };
 
-
     useEffect(() => {
   if (busca.trim() === '') {
     setFilteredVeiculos(veiculos);
@@ -74,7 +73,7 @@ const Veiculos = () => {
     }};
         carregarVeiculos();
         carregarCategorias();
-     }, []);
+    }, []);
 
     const deletarcat = async (id_categoria) => {
         try {
@@ -94,6 +93,7 @@ const Veiculos = () => {
             console.error("Erro ao deletar categoria:", error);
         }
     };
+
     const addCategoria = async (dados) => {
         try {
             const response = await axios.post('http://localhost:3001/categorias', dados);
@@ -103,7 +103,7 @@ const Veiculos = () => {
             console.error("Erro ao adicionar categoria:", error);
         }
     };
-    
+
     const addVeiculo = async (e) => {
             setLoading(true);
         try {
@@ -132,7 +132,7 @@ const Veiculos = () => {
             });
         }
     };
-    
+
     const deletarVeiculo = async (chassi) => {
         try {
             const confirmacao = window.confirm("Tem certeza que deseja excluir este veículo?");

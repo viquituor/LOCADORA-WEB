@@ -108,11 +108,76 @@ const Locacao = () => {
         try {
             const response = await axios.post('http://localhost:3001/locacoes', {...formData});
             alert("Locação adicionada com sucesso:", response.data);
+            const loc = await axios.get('http://localhost:3001/locacoes');
+            setLocacoes(loc.data);
             setAddLocacao(false);
             setListaLocacao(true);
         } catch (error) {
             console.error("Erro ao adicionar locação:", error);
             setError("Erro ao adicionar locação. Verifique os dados e tente novamente.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const EncerrarLoc = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await axios.put('http://localhost:3001/locacoes/encerrar', {
+                cod_loc: LocacaoSelecionada.cod_loc,
+                data_termino: formData.data_termino});
+            alert("Locação encerrada com sucesso:", response.data);
+            const loc = await axios.get('http://localhost:3001/locacoes');
+            setLocacoes(loc.data);
+            setEncerrarlocacao(false);
+            setListaLocacao(true);
+        } catch (error) {
+            console.error("Erro ao encerrar locação:", error);
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
+    const excluirLocacao = async (cod_loc) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await axios.delete(`http://localhost:3001/locacoes/${cod_loc}`);
+            alert("Locação excluída com sucesso:", response.data);
+            const loc = await axios.get('http://localhost:3001/locacoes');
+            setLocacoes(loc.data);
+            setListaLocacao(true);
+        } catch (error) {
+            console.error("Erro ao excluir locação:", error);
+            setError("Erro ao excluir locação. Verifique os dados e tente novamente.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const atualizarLocacao = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await axios.put(`http://localhost:3001/locacoes/${LocacaoSelecionada.cod_loc}`, {
+                chassi_veiculo: formData.chassi,
+                habilitacao_cliente: formData.habilitacao_cliente,
+                data_inicio: formData.data_inicio,
+                data_termino: formData.data_termino,
+                situacao: formData.situacao
+            });
+            alert("Locação atualizada com sucesso!", response.data);
+            const loc = await axios.get('http://localhost:3001/locacoes');
+            setLocacoes(loc.data);
+            setEditLoc(false);
+            setListaLocacao(true);
+        } catch (error) {
+            console.error("Erro ao atualizar locação:", error);
+            setError("Erro ao atualizar locação. Verifique os dados e tente novamente.");
         } finally {
             setLoading(false);
         }
@@ -147,17 +212,23 @@ const Locacao = () => {
                         <table>
                             <thead><tr><th>&#9998;</th><th>ID</th><th>CLIENTE</th><th>HABILITAÇÃO</th><th>DATA INICIO</th><th>DATA FIM</th><th>SITUAÇÃO</th><th>MODELO</th><th>MARCA</th><th>PLACA</th></tr></thead>
                             <tbody>{locacaoFiltradas.map((loc) => (
-                                    <tr key={loc.cod_loc} onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>
-                                        <td onClick={() => {setLocacaoSelecionada(loc); setEditLoc(true);setListaLocacao(false); setAddLocacao(false);}}>&#9998;</td>
-                                        <td>{loc.cod_loc}</td>
-                                        <td>{loc.nome}</td>
-                                        <td>{loc.habilitacao_cliente}</td>
-                                        <td>{new Date(loc.data_inicio).toLocaleDateString()}</td>
-                                        <td>{loc.data_termino? new Date(loc.data_termino).toLocaleDateString() : loc.data_termino || "Em locação"}</td>
-                                        <td>{loc.situacao}</td>
-                                        <td>{loc.modelo}</td>
-                                        <td>{loc.marca}</td>
-                                        <td>{loc.placa}</td>
+                                    <tr key={loc.cod_loc}>
+                                        <td onClick={() => {setLocacaoSelecionada(loc); setFormData({
+                                                                                      chassi: loc.chassi_veiculo,
+                                                                                      habilitacao_cliente: loc.habilitacao_cliente,
+                                                                                      data_inicio: loc.data_inicio.split('T')[0], // Formata a data
+                                                                                      data_termino: loc.data_termino ? loc.data_termino.split('T')[0] : '',
+                                                                                      situacao: loc.situacao
+                                                                                    }); setEditLoc(true); setListaLocacao(false); setAddLocacao(false);}}>&#9998;</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{loc.cod_loc}</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{loc.nome}</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{loc.habilitacao_cliente}</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{new Date(loc.data_inicio).toLocaleDateString()}</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{loc.data_termino? new Date(loc.data_termino).toLocaleDateString() : loc.data_termino || "Em locação"}</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{loc.situacao}</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{loc.modelo}</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{loc.marca}</td>
+                                        <td onClick={() => {setInfoloc(true) ;setLocacaoSelecionada(loc); setAddLocacao(false); setListaLocacao(false);}}>{loc.placa}</td>
                                         </tr>
                             ))}</tbody>
 
@@ -205,24 +276,55 @@ const Locacao = () => {
                 {Infoloc && LocacaoSelecionada && (
                     <div className="info-loc">
                         <h2>INFORMAÇÕES DA LOCAÇÃO</h2>
-                        <p><strong>ID:</strong> {LocacaoSelecionada.cod_loc}</p>
-                        <p><strong>CLIENTE:</strong> {LocacaoSelecionada.nome}</p>
-                        <p><strong>HABILITAÇÃO:</strong> {LocacaoSelecionada.habilitacao_cliente}</p>
-                        <p><strong>DATA INICIO:</strong> {new Date(LocacaoSelecionada.data_inicio).toLocaleDateString()}</p>
-                        <p><strong>DATA FIM:</strong> {LocacaoSelecionada.data_termino ? new Date(LocacaoSelecionada.data_termino).toLocaleDateString() : "Em locação"}</p>
-                        <p><strong>SITUAÇÃO:</strong> {LocacaoSelecionada.situacao}</p>
-                        <p><strong>MODELO:</strong> {LocacaoSelecionada.modelo}</p>
-                        <p><strong>MARCA:</strong> {LocacaoSelecionada.marca}</p>
-                        <p><strong>PLACA:</strong> {LocacaoSelecionada.placa}</p>
-                        <button className="voltar" onClick={() => {setInfoloc(false);setListaLocacao(true)}}>VOLTAR</button>
-                        <button className="editar" onClick={() => {setEncerrarlocacao(true);setInfoloc(false);setListaLocacao(false)}}>ENCERRAR LOCAÇÃO</button>
-                        <button className="deletar">excluir</button>
+                        <p><strong>ID</strong> <br/> {LocacaoSelecionada.cod_loc}</p>
+                        <p><strong>CLIENTE</strong> <br/>  {LocacaoSelecionada.nome}</p>
+                        <p><strong>HABILITAÇÃO</strong> <br/>  {LocacaoSelecionada.habilitacao_cliente}</p>
+                        <p><strong>DATA INICIO</strong><br/>  {new Date(LocacaoSelecionada.data_inicio).toLocaleDateString()}</p>
+                        <p><strong>DATA FIM</strong><br/>  {LocacaoSelecionada.data_termino ? new Date(LocacaoSelecionada.data_termino).toLocaleDateString() : "Em locação"}</p>
+                        <p><strong>SITUAÇÃO</strong><br/>  {LocacaoSelecionada.situacao}</p>
+                        <p><strong>MODELO</strong><br/>  {LocacaoSelecionada.modelo}</p>
+                        <p><strong>MARCA</strong><br/>  {LocacaoSelecionada.marca}</p>
+                        <p><strong>PLACA</strong> <br/> {LocacaoSelecionada.placa}</p>
+                        <div className="botoes">
+                        <button className="voltar"  onClick={() => {setInfoloc(false);setListaLocacao(true)}}>VOLTAR</button>
+                        <button className="editar"  onClick={() => {setEncerrarlocacao(true);setInfoloc(false);setListaLocacao(false)}}>ENCERRAR LOCAÇÃO</button>
+                        <button className="deletar" onClick={() => excluirLocacao(LocacaoSelecionada.cod_loc)}>excluir</button>
+                        </div>
                     </div>
                 )}
                 {EditLoc && LocacaoSelecionada && (
                     <div className="edit-loc">
                         <h2>EDITAR LOCAÇÃO</h2>
-                        <form >
+                        <form onSubmit={atualizarLocacao}>
+                            <label>
+                                Cliente <br/>
+                                <select
+                                    name="habilitacao_cliente"
+                                    value={formData.habilitacao_cliente}
+                                    onChange={(e) => setFormData({...formData, habilitacao_cliente: e.target.value})}>
+                                    <option value="">Selecione</option>
+                                    {clientes.map((cliente) => (
+                                        <option key={cliente.habilitacao} value={cliente.habilitacao}>
+                                            {cliente.nome}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label>
+                                Veículo <br/>
+                                <select
+                                    name="chassi"
+                                    value={formData.chassi}
+                                    placeholder={`${LocacaoSelecionada.modelo} -- ${LocacaoSelecionada.placa}`}
+                                    onChange={(e) => setFormData({...formData, chassi: e.target.value})}>
+                                    <option value="">Selecione</option>
+                                    {veiculos.map((veiculo) => (
+                                        <option key={veiculo.chassi} value={veiculo.chassi}>
+                                            {`${veiculo.modelo} -- ${veiculo.placa}`}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
                             <label>
                                 Data de término <br/>
                                 <input
@@ -234,6 +336,16 @@ const Locacao = () => {
                                 />
                             </label>
                             <label>
+                                Data de início <br/>
+                                <input
+                                    type="date"
+                                    id="data_inicio"
+                                    name="data_inicio"
+                                    value={formData.data_inicio}
+                                    onChange={(e) => setFormData({...formData, data_inicio: e.target.value})}
+                                />
+                            </label>
+                            <label>
                                 Situação <br/>
                                 <select
                                     name="situacao"
@@ -241,19 +353,36 @@ const Locacao = () => {
                                     onChange={(e) => setFormData({...formData, situacao: e.target.value})}
                                 >
                                     <option value="">Selecione</option>
-                                    <option value="Finalizada">Finalizada</option>
-                                    <option value="Em locação">Em locação</option>
+                                    <option value="Finalizada">ENCERRADA</option>
+                                    <option value="Em locação">EM ABERTO</option>
                                 </select>
                             </label>
+                            <div className="botoes">
                             <button className="salvar" type="submit" disabled={loading}>{loading ? "SALVANDO..." : "SALVAR"}</button>
                             {error && <button className="error-message">{error}</button>}
                             <button className="voltar" onClick={() => {setEditLoc(false);setListaLocacao(true)}}>VOLTAR</button>
+                            </div>
                         </form>
                     </div>
                 )}
                 {EncerrarLocacao && LocacaoSelecionada && (
                     <div className="encerrar-loc">
                         <h2>ENCERRAR LOCAÇÃO</h2>
+                        <form onSubmit={EncerrarLoc}>
+                            <label>
+                                Data de término <br/>
+                                <input
+                                    type="date"
+                                    id="data_termino"
+                                    name="data_termino"
+                                    value={formData.data_termino}
+                                    onChange={(e) => setFormData({...formData, data_termino: e.target.value})}
+                                />
+                            </label>
+                            <button className="salvar" type="submit" disabled={loading}>{loading ? "SALVANDO..." : "SALVAR"}</button>
+                            {error && <button className="error-message">{error}</button>}
+                            <button className="voltar" onClick={() => {setEncerrarlocacao(false);setListaLocacao(true)}}>VOLTAR</button>
+                        </form>
                         </div>
                 )}
             </main>
