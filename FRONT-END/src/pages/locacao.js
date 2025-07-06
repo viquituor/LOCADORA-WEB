@@ -88,18 +88,32 @@ const Locacao = () => {
   if (busca.trim() === '') {
     setlocacaoFiltradas(Locacao);
   } else {
-    const filtered = Locacao.filter(loc =>
-      loc.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      loc.situacao.toLowerCase().includes(busca.toLowerCase()) ||
-      loc.data_inicio.toString().includes(busca.toLowerCase()) ||
-      loc.data_termino.toString().includes(busca.toLowerCase()) ||
-      loc.habilitacao_cliente.toString().includes(busca.toLowerCase()) ||
-      loc.modelo.toString().includes(busca.toLowerCase()) ||
-      loc.marca.toString().includes(busca.toLowerCase())
-    );
+    const searchTerm = busca.toLowerCase();
+    const filtered = Locacao.filter(loc => {
+      // Verifica campos de texto primeiro (mais eficiente)
+      if (loc.nome.toLowerCase().includes(searchTerm)) return true;
+      if (loc.situacao.toLowerCase().includes(searchTerm)) return true;
+      if (loc.habilitacao_cliente.toString().includes(searchTerm)) return true;
+      if (loc.modelo.toLowerCase().includes(searchTerm)) return true;
+      if (loc.marca.toLowerCase().includes(searchTerm)) return true;
+      if (loc.placa.toLowerCase().includes(searchTerm)) return true;
+
+      // Verifica datas com formatação consistente
+      const inicioFormatado = new Date(loc.data_inicio).toLocaleDateString('pt-BR');
+      if (inicioFormatado.includes(searchTerm)) return true;
+
+      if (loc.data_termino) {
+        const terminoFormatado = new Date(loc.data_termino).toLocaleDateString('pt-BR');
+        if (terminoFormatado.includes(searchTerm)) return true;
+      } else if ("em locação".includes(searchTerm)) {
+        return true;
+      }
+
+      return false;
+    });
     setlocacaoFiltradas(filtered);
   }
-      }, [busca, Locacao]);
+}, [busca, Locacao]);
 
     const AdicionarLocacao = async (e) => {
         e.preventDefault();
@@ -331,8 +345,9 @@ const Locacao = () => {
                                     type="date"
                                     id="data_termino"
                                     name="data_termino"
-                                    value={formData.data_termino}
+                                    value={formData.data_termino || ''}
                                     onChange={(e) => setFormData({...formData, data_termino: e.target.value})}
+                                    placeholder={formData.data_termino ? '' : 'Em aberto'}
                                 />
                             </label>
                             <label>
@@ -353,8 +368,8 @@ const Locacao = () => {
                                     onChange={(e) => setFormData({...formData, situacao: e.target.value})}
                                 >
                                     <option value="">Selecione</option>
-                                    <option value="Finalizada">ENCERRADA</option>
-                                    <option value="Em locação">EM ABERTO</option>
+                                    <option value="ENCERRADA">ENCERRADA</option>
+                                    <option value="EM ABERTA">EM ABERTA</option>
                                 </select>
                             </label>
                             <div className="botoes">

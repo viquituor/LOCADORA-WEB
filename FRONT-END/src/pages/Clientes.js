@@ -45,6 +45,27 @@ const Clientes = () => {
 
     }, []);
 
+    const filtrarClientes = () => {
+  if (!busca.trim()) return Clientes;
+  
+  const searchTerm = busca.toLowerCase();
+  return Clientes.filter(cli => {
+    // Verifica campos mais relevantes primeiro para melhor performance
+    if (cli.nome.toLowerCase().includes(searchTerm)) return true;
+    if (cli.habilitacao.includes(searchTerm)) return true;
+    
+    // Formata data para busca no formato brasileiro
+    try {
+      const dataFormatada = new Date(cli.data_nascimento).toLocaleDateString('pt-BR');
+      if (dataFormatada.includes(searchTerm)) return true;
+    } catch (e) {
+      console.error("Erro ao formatar data:", e);
+    }
+    
+    return false;
+  });
+};
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -122,17 +143,16 @@ const Clientes = () => {
         setLoading(false);
       }};
 
-
   return (
     <div className="container">
       <header>
         <nav>
         <Link to="/"><img src={logo} alt="logo"></img></Link>
-        
+
             <button onClick={() => navigate(`/`, {replace: true})} >locação</button>
             <button onClick={() => navigate(`/Veiculos`, {replace: true})}>veiculos</button>
             <button onClick={() => navigate(`/Clientes`, {replace: true})} className="atv">clientes</button>
-        
+
         <Link to="/"><img src={logo} alt="logo"></img></Link>
         </nav>
         <div className="add">
@@ -154,7 +174,7 @@ const Clientes = () => {
       <main>
                 {Listacli && (
                     <div className="Lista-cli">
-                     { Clientes.map((cli) =>  
+                     { filtrarClientes().map((cli) =>
                          <button className="cli-card" key={cli.habilitacao} onClick={() => {setListacli(false);setInfocli(true);setCliselecionado(cli)}}>
                             <h2>{cli.nome}</h2>
                             <p>{cli.habilitacao}</p>
@@ -306,7 +326,6 @@ const Clientes = () => {
       </main>
 
       <footer>
-        
       </footer>
     </div>
   );

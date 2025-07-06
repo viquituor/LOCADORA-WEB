@@ -122,18 +122,18 @@ Isso inicia Frontend (React) e Backend (Node.js) ao mesmo tempo usando concurren
 
 ## 📌 Observações
 
-### O backend roda na porta 3001 (API REST)
+O backend roda na porta 3001 (API REST)
 
-### O frontend roda na porta 3000 (React App)
+O frontend roda na porta 3000 (React App)
 
-### Certifique-se de que o MySQL está rodando antes de iniciar o backend
+Certifique-se de que o MySQL está rodando antes de iniciar o backend
 
-### Use Ctrl+C para encerrar os servidores
+Use Ctrl+C para encerrar os servidores
 
 ## 🔧 Solução de Problemas
 
-### Erro de conexão com o MySQL: Verifique as credenciais no arquivo BACK-END/config/database.js
+Erro de conexão com o MySQL: Verifique as credenciais no arquivo BACK-END/config/database.js
 
-### Dependências faltando: Execute npm install novamente na pasta correspondente
+Dependências faltando: Execute npm install novamente na pasta correspondente
 
-### Portas em uso: Feche outros programas usando as portas 3000 ou 3001
+Portas em uso: Feche outros programas usando as portas 3000 ou 3001

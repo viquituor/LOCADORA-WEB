@@ -89,28 +89,55 @@ class Locacao {
   }
 
   static async atualizar(cod_loc, dados) {
-    try {
-      console.log("Model: Atualizando locação...");
-      const { chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao } = dados;
-      
-      const [result] = await pool.query(`
-        UPDATE locacao
-        SET chassi_veiculo = ?, habilitacao_cliente = ?, data_inicio = ?, data_termino = ?, situacao = ?
-        WHERE cod_loc = ?
-      `, [chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao, cod_loc]);
-      
-      if (result.affectedRows === 0) {
-        console.warn("Model: Nenhuma locação encontrada para atualizar com cod_loc:", cod_loc);
-        return null;
-      }
-      
-      console.log("Model: Locações atualizada com sucesso:", cod_loc);
-      return { cod_loc, ...dados };
-    } catch (err) {
-      console.error("Model - Erro ao atualizar locação:", err);
-      throw err;
+  try {
+    console.log("Model: Atualizando locação...");
+    const { chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao } = dados;
+    
+    const [result] = await pool.query(`
+      UPDATE locacao
+      SET 
+        chassi_veiculo = ?, 
+        habilitacao_cliente = ?, 
+        data_inicio = ?, 
+        data_termino = ?
+      WHERE cod_loc = ?
+    `, [chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, cod_loc]);
+    
+    if (result.affectedRows === 0) {
+      console.warn("Model: Nenhuma locação encontrada para atualizar com cod_loc:", cod_loc);
+      return null;
     }
+
+    if(situacao === 'ENCERRADA' && !data_termino) {
+      console.warn("Model: Data de término é obrigatória para locações encerradas.");
+      throw new Error("Data de término é obrigatória para locações encerradas.");
+    }
+    if(situacao === 'EM ABERTO') {
+      const [resultSituacao] = await pool.query(`
+        UPDATE locacao
+        SET situacao = 'Em ABERTO', data_termino = NULL
+        WHERE cod_loc = ?
+      `, [cod_loc]);
+      data_termino = null;
+    }
+    
+    // Retornar os dados atualizados, mostrando "Em aberto" se data_termino for null
+    const locacaoAtualizada = {
+      cod_loc,
+      chassi_veiculo,
+      habilitacao_cliente,
+      data_inicio,
+      data_termino: data_termino || 'Em aberto',
+      situacao
+    };
+    
+    console.log("Model: Locações atualizada com sucesso:", locacaoAtualizada);
+    return locacaoAtualizada;
+  } catch (err) {
+    console.error("Model - Erro ao atualizar locação:", err);
+    throw err;
   }
+}
 }
 
 module.exports = Locacao;

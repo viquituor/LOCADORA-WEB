@@ -88,16 +88,18 @@ exports.atualizarLocacao = async (req, res, next) => {
       return res.status(400).json({ message: 'Dados incompletos para atualizar locação' });
     }
 
-    // Validação adicional para data_termino quando situacao for "Finalizada"
-    if (situacao === 'Finalizada' && !data_termino) {
-      return res.status(400).json({ message: 'Data de término é obrigatória para locações finalizadas' });
+    if (situacao === 'ENCERRADO' && !data_termino) {
+      return res.status(400).json({ message: 'Data de término é obrigatória para locações encerradas' });
     }
+
+    // Se a situação for "Em locação", forçamos data_termino para null
+    const dataTerminoFinal = situacao === 'EM ABERTA' ? null : data_termino;
 
     const locacaoAtualizada = await Locacao.atualizar(cod_loc, {
       chassi_veiculo,
       habilitacao_cliente,
       data_inicio,
-      data_termino,
+      data_termino: dataTerminoFinal,
       situacao
     });
 

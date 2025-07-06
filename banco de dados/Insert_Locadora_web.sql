@@ -40,9 +40,9 @@ INSERT INTO Locacao (data_inicio, data_termino, situacao, habilitacao_cliente, c
 -- Locação ENCERRADA: cliente Victor, veículo HB20
 ('2025-06-01', '2025-06-10', 'ENCERRADA', '12345678901', '9BDZE54T6P067890'),
 -- Locação ABERTA: cliente Ana, veículo Argo
-('2025-06-15', NULL, 'ABERTA', '23456789012', '9BWCA05UX8P012345'),
+('2025-06-15', NULL, 'EM ABERTO', '23456789012', '9BWCA05UX8P012345'),
 -- Locação ABERTA: cliente Marcos, veículo Renegade
-('2025-06-20', NULL, 'ABERTA', '34567890123', '9BGDA12E1P031313'),
+('2025-06-20', NULL, 'EM ABERTO', '34567890123', '9BGDA12E1P031313'),
 -- Locação que foi encerrada no mesmo dia: cliente Beatriz, veículo Gol
 ('2025-05-20', '2025-05-20', 'ENCERRADA', '45678901234', '9AWBB04UX8P054321');
 
