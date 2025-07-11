@@ -302,7 +302,7 @@ const Locacao = () => {
                         <div className="botoes">
                         <button className="voltar"  onClick={() => {setInfoloc(false);setListaLocacao(true)}}>VOLTAR</button>
                         <button className="editar"  onClick={() => {setEncerrarlocacao(true);setInfoloc(false);setListaLocacao(false)}}>ENCERRAR LOCAÇÃO</button>
-                        <button className="deletar" onClick={() => excluirLocacao(LocacaoSelecionada.cod_loc)}>excluir</button>
+                        <button className="deletar" onClick={() => {excluirLocacao(LocacaoSelecionada.cod_loc);setInfoloc(false);setListaLocacao(true)}}>excluir</button>
                         </div>
                     </div>
                 )}
