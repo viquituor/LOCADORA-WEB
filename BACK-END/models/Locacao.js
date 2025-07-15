@@ -15,7 +15,8 @@ class Locacao {
           loc.situacao, 
           vec.modelo,
           vec.marca, 
-          vec.placa
+          vec.placa,
+          loc.chassi_veiculo
         FROM locacao loc
         JOIN veiculo vec ON vec.chassi = loc.chassi_veiculo
         JOIN cliente cli ON cli.habilitacao = loc.habilitacao_cliente
@@ -110,17 +111,23 @@ class Locacao {
   try {
     const { chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao } = dados;
     
+    // Verificar se a locação existe
+    const [currentLoc] = await pool.query('SELECT * FROM locacao WHERE cod_loc = ?', [cod_loc]);
+    if (currentLoc.length === 0) {
+      return null;
+    }
+
     // Verificar se está tentando mudar para EM ABERTO uma locação ENCERRADA
-    const [currentLoc] = await pool.query('SELECT situacao FROM locacao WHERE cod_loc = ?', [cod_loc]);
     if (currentLoc[0].situacao === 'ENCERRADA' && situacao === 'EM ABERTO') {
       throw new Error('Não é possível reabrir uma locação encerrada');
     }
 
-    // Verificar disponibilidade do veículo se estiver mudando o veículo
-    if (currentLoc[0].chassi_veiculo !== chassi_veiculo) {
+    // Verificar disponibilidade do veículo se estiver mudando o veículo ou situação
+    if (currentLoc[0].chassi_veiculo !== chassi_veiculo || 
+        (currentLoc[0].situacao !== situacao && situacao === 'EM ABERTO')) {
       const veiculoDisponivel = await this.verificarVeiculoDisponivel(chassi_veiculo);
       if (!veiculoDisponivel) {
-        throw new Error('Novo veículo já está em uma locação ativa');
+        throw new Error('Veículo já está em uma locação ativa');
       }
     }
 
@@ -149,11 +156,9 @@ class Locacao {
     ]);
     
     if (result.affectedRows === 0) {
-      console.warn("Model: Nenhuma locação encontrada para atualizar com cod_loc:", cod_loc);
       return null;
     }
 
-    console.log("Model: Locação atualizada com sucesso:", cod_loc);
     return {
       cod_loc,
       chassi_veiculo,

@@ -32,8 +32,8 @@
     top: -110px;
     padding-top: 20px;
     z-index: 1;
-    width: 40vw;
-    height: 50vh;
+    width: 35vw;
+    height: 55vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;
     border-radius: 0 0 30px 30px;
@@ -74,8 +74,8 @@
     top: -110px;
     padding-top: 20px;
     z-index: 1;
-    width: 50vw;
-    height: 60vh;
+    width: 55vw;
+    height: 55vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;
     border-radius: 0 0 30px 30px;
@@ -129,7 +129,7 @@
     top: -160px;
     padding-top: 20px;
     z-index: 1;
-    width: 30vw;
+    width: 25vw;
     height: 45vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;
@@ -170,7 +170,7 @@
     top: -110px;
     padding-top: 20px;
     z-index: 1;
-    width: 70vw;
+    width: 50vw;
     height: 55vh;
     background-color: #005796;
     box-shadow: 1px 1px 20px 1px #fff;

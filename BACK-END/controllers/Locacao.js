@@ -82,15 +82,21 @@ exports.atualizarLocacao = async (req, res, next) => {
     const { cod_loc } = req.params;
     const { chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao } = req.body;
 
+    // Validação de campos obrigatórios
     if (!cod_loc || !chassi_veiculo || !habilitacao_cliente || !data_inicio || !situacao) {
       return res.status(400).json({ message: 'Dados incompletos para atualizar locação' });
+    }
+
+    // Validação de datas
+    if (data_termino && new Date(data_termino) < new Date(data_inicio)) {
+      return res.status(400).json({ message: 'Data de término não pode ser anterior à data de início' });
     }
 
     const locacaoAtualizada = await Locacao.atualizar(cod_loc, {
       chassi_veiculo,
       habilitacao_cliente,
       data_inicio,
-      data_termino,
+      data_termino: situacao === 'EM ABERTO' ? null : data_termino,
       situacao
     });
 

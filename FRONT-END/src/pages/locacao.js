@@ -186,35 +186,53 @@ const Locacao = () => {
   e.preventDefault();
   setLoading(true);
   setError(null);
+  
   try {
-    if (!formData.chassi || !formData.habilitacao_cliente || !formData.data_inicio || !formData.situacao) {
+    // Validação dos campos obrigatórios
+    if (!formData.chassi || !formData.habilitacao_cliente || 
+        !formData.data_inicio || !formData.situacao) {
       throw new Error('Preencha todos os campos obrigatórios');
     }
-    
-    if (formData.situacao === 'ENCERRADA' && !formData.data_termino) {
-      throw new Error('Data de término é obrigatória para locações encerradas');
+
+    // Validação de datas
+    const dataInicio = new Date(formData.data_inicio);
+    if (formData.data_termino) {
+      const dataTermino = new Date(formData.data_termino);
+      if (dataTermino < dataInicio) {
+        throw new Error('Data de término não pode ser anterior à data de início');
+      }
     }
 
-    const response = await axios.put(`http://localhost:3001/locacoes/${LocacaoSelecionada.cod_loc}`, {
-      chassi_veiculo: formData.chassi,
-      habilitacao_cliente: formData.habilitacao_cliente,
-      data_inicio: formData.data_inicio,
-      data_termino: formData.situacao === 'EM ABERTO' ? null : formData.data_termino,
-      situacao: formData.situacao
-    });
-    
-    alert("Locação atualizada com sucesso!", response.data);
+    // Corrigindo o typo no estado
+    const situacaoCorrigida = formData.situacao === 'EM ABERTA' ? 'EM ABERTO' : formData.situacao;
+
+    const response = await axios.put(
+      `http://localhost:3001/locacoes/${LocacaoSelecionada.cod_loc}`, 
+      {
+        chassi_veiculo: formData.chassi,
+        habilitacao_cliente: formData.habilitacao_cliente,
+        data_inicio: formData.data_inicio,
+        data_termino: situacaoCorrigida === 'EM ABERTO' ? null : formData.data_termino,
+        situacao: situacaoCorrigida
+      }
+    );
+
+    // Atualiza a lista após sucesso
     const loc = await axios.get('http://localhost:3001/locacoes');
     setLocacoes(loc.data);
+    
+    alert("Locação atualizada com sucesso!", response.data);
     setEditLoc(false);
     setListaLocacao(true);
   } catch (error) {
-    const errorMsg = error.response?.data?.message || error.message || "Erro ao atualizar locação";
+    const errorMsg = error.response?.data?.message || 
+                   error.message || 
+                   "Erro ao atualizar locação";
     setError(errorMsg);
   } finally {
     setLoading(false);
   }
-};
+    };
 
   return (
     <div className="container">
@@ -323,83 +341,111 @@ const Locacao = () => {
                         {LocacaoSelecionada.situacao === 'EM ABERTO' && (
                         <button className="editar" onClick={() => {setEncerrarlocacao(true);setInfoloc(false);setListaLocacao(false)}}>ENCERRAR LOCAÇÃO</button>
                         )}
-                        <button className="deletar" onClick={() => excluirLocacao(LocacaoSelecionada.cod_loc)}>excluir</button>
+                        <button className="deletar" onClick={() => {excluirLocacao(LocacaoSelecionada.cod_loc);setInfoloc(false);setListaLocacao(true)}}>excluir</button>
                        </div>
                     </div>
                 )}
                 {EditLoc && LocacaoSelecionada && (
-                    <div className="edit-loc">
-                        <h2>EDITAR LOCAÇÃO</h2>
-                        <form onSubmit={atualizarLocacao}>
-                            <label>
-                                Cliente <br/>
-                                <select
-                                    name="habilitacao_cliente"
-                                    value={formData.habilitacao_cliente}
-                                    onChange={(e) => setFormData({...formData, habilitacao_cliente: e.target.value})}>
-                                    <option value="">Selecione</option>
-                                    {clientes.map((cliente) => (
-                                        <option key={cliente.habilitacao} value={cliente.habilitacao}>
-                                            {cliente.nome}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-                            <label>
-                                Veículo <br/>
-                                <select
-                                    name="chassi"
-                                    value={formData.chassi}
-                                    placeholder={`${LocacaoSelecionada.modelo} -- ${LocacaoSelecionada.placa}`}
-                                    onChange={(e) => setFormData({...formData, chassi: e.target.value})}>
-                                    <option value="">Selecione</option>
-                                    {veiculos.map((veiculo) => (
-                                        <option key={veiculo.chassi} value={veiculo.chassi}>
-                                            {`${veiculo.modelo} -- ${veiculo.placa}`}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-                            <label>
-                                Data de término <br/>
-                                <input
-                                    type="date"
-                                    id="data_termino"
-                                    name="data_termino"
-                                    value={formData.data_termino || ''}
-                                    onChange={(e) => setFormData({...formData, data_termino: e.target.value})}
-                                    placeholder={formData.data_termino ? '' : 'Em aberto'}
-                                />
-                            </label>
-                            <label>
-                                Data de início <br/>
-                                <input
-                                    type="date"
-                                    id="data_inicio"
-                                    name="data_inicio"
-                                    value={formData.data_inicio}
-                                    onChange={(e) => setFormData({...formData, data_inicio: e.target.value})}
-                                />
-                            </label>
-                            <label>
-                                Situação <br/>
-                                <select
-                                    name="situacao"
-                                    value={formData.situacao}
-                                    onChange={(e) => setFormData({...formData, situacao: e.target.value})}
-                                >
-                                    <option value="">Selecione</option>
-                                    <option value="ENCERRADA">ENCERRADA</option>
-                                    <option value="EM ABERTA">EM ABERTA</option>
-                                </select>
-                            </label>
-                            <div className="botoes">
-                            <button className="salvar" type="submit" disabled={loading}>{loading ? "SALVANDO..." : "SALVAR"}</button>
-                            {error && <button className="error-message">{error}</button>}
-                            <button className="voltar" onClick={() => {setEditLoc(false);setListaLocacao(true)}}>VOLTAR</button>
-                            </div>
-                        </form>
-                    </div>
+    <div className="edit-loc">
+        <h2>EDITAR LOCAÇÃO</h2>
+        <form onSubmit={atualizarLocacao}>
+            <label>
+                Cliente <br/>
+                <select
+                    name="habilitacao_cliente"
+                    value={formData.habilitacao_cliente}
+                    onChange={(e) => setFormData({...formData, habilitacao_cliente: e.target.value})}>
+                    <option value="">Selecione</option>
+                    {clientes.map((cliente) => (
+                        <option key={cliente.habilitacao} value={cliente.habilitacao}>
+                            {cliente.nome} - {cliente.habilitacao}
+                        </option>
+                    ))}
+                </select>
+            </label>
+
+            <label>
+                Veículo <br/>
+                <select
+                    name="chassi"
+                    value={formData.chassi}
+                    onChange={(e) => setFormData({...formData, chassi: e.target.value})}
+                >
+                    <option value={formData.chassi}>{formData.chassi}</option>
+                    {veiculos.map((veiculo) => (
+                        <option 
+                            key={veiculo.chassi} 
+                            value={veiculo.chassi}
+                        >
+                            {`${veiculo.modelo} - ${veiculo.placa} (${veiculo.marca})`}
+                        </option>
+                    ))}
+                </select>
+            </label>
+
+            <label>
+                Data de início <br/>
+                <input
+                    type="date"
+                    id="data_inicio"
+                    name="data_inicio"
+                    value={formData.data_inicio}
+                    onChange={(e) => setFormData({...formData, data_inicio: e.target.value})}
+                    required
+                />
+            </label>
+
+            <label>
+                Situação <br/>
+                <select
+                    name="situacao"
+                    value={formData.situacao}
+                    onChange={(e) => {
+                        setFormData({
+                            ...formData, 
+                            situacao: e.target.value,
+                            data_termino: e.target.value === 'EM ABERTA' ? '' : formData.data_termino
+                        });
+                    }}
+                    required
+                >   <option value={formData.situacao}>{formData.situacao}</option>
+                    {formData.situacao === 'ENCERRADA' && (<option value="EM ABERTO">EM ABERTO</option>)}
+                    {formData.situacao === 'EM ABERTO' && (<option value="ENCERRADA">ENCERRADA</option>)}
+                </select>
+            </label>
+
+            {formData.situacao === 'ENCERRADA' && (
+                <label>
+                    Data de término <br/>
+                    <input
+                        type="date"
+                        id="data_termino"
+                        name="data_termino"
+                        value={formData.data_termino || ''}
+                        onChange={(e) => setFormData({...formData, data_termino: e.target.value})}
+                        required={formData.situacao === 'ENCERRADA'}
+                    />
+                </label>
+            )}
+
+            <div className="botoes">
+                <button className="salvar" type="submit" disabled={loading}>
+                    {loading ? "SALVANDO..." : "SALVAR"}
+                </button>
+                {error && <div className="error-message">{error}</div>}
+                <button 
+                    className="voltar" 
+                    type="button"
+                    onClick={() => {
+                        setEditLoc(false);
+                        setListaLocacao(true);
+                    }}
+                >
+                    VOLTAR
+                </button>
+            </div>
+        </form>
+    </div>
                 )}
                 {EncerrarLocacao && LocacaoSelecionada && (
                     <div className="encerrar-loc">
