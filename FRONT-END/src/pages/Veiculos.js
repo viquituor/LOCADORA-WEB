@@ -104,34 +104,50 @@ const Veiculos = () => {
         }
     };
 
-    const addVeiculo = async (e) => {
-            setLoading(true);
-        try {
-            const response = await axios.post('http://localhost:3001/veiculo', {...formData});
-            console.log("Veículo adicionado:", response.data);
-            const vec = await axios.get('http://localhost:3001/veiculo');
-            setVeiculos(vec.data);
-            setAddVeiculo(false);
-            setListaVeiculos(true);
-            
-        } catch (err) {
-            setError(err.response?.data?.error || err.message);
-        }finally {
-            setLoading(false);
-            setError(null);
-            setFormData({
-                placa: '',
-                chassi: '',
-                marca: '',
-                modelo: '',
-                ano: '',
-                cor: '',
-                categoria: '',
-                preco_diaria: '',
-                receita_total: ''
-            });
-        }
-    };
+    const addVeiculo = async () => {
+    setLoading(true);
+    setError(null); // Limpa erros anteriores
+    
+    // Validação formatada como string
+    let errorMessage = '';
+    
+    if (!formData.chassi || formData.chassi.length !== 17) {
+        errorMessage += "Chassi deve ter 17 caracteres. ";
+    }
+    if (!formData.placa || formData.placa.length !== 7) {
+        errorMessage += "Placa deve ter 7 caracteres. ";
+    }
+    if (!formData.id_categoria) {
+        errorMessage += "Selecione uma categoria. ";
+    }
+    
+    if (errorMessage) {
+        setError(errorMessage.trim()); // Envia como string única
+        setLoading(false);
+        return;
+    }
+    
+    try {
+        const response = await axios.post('http://localhost:3001/veiculo', {
+            ...formData,
+            placa: formData.placa.toUpperCase().replace(/-/g, ''),
+            chassi: formData.chassi.toUpperCase()
+        });
+        
+        alert("Veículo adicionado com sucesso!", response.data);
+        const vec = await axios.get('http://localhost:3001/veiculo');
+        setVeiculos(vec.data);
+        setAddVeiculo(false);
+        setListaVeiculos(true);
+        
+    } catch (err) {
+        // Converte erros de API para string
+        const apiError = err.response?.data?.error || err.message;
+        setError(typeof apiError === 'object' ? JSON.stringify(apiError) : apiError);
+    } finally {
+        setLoading(false);
+    }
+};
 
     const deletarVeiculo = async (chassi) => {
         try {
@@ -249,7 +265,7 @@ const Veiculos = () => {
                 {AddVeiculo && (
                     <div className="add-vec">
                         <h2>ADICIONE UM NOVO VEÍCULO</h2>
-                        <form onSubmit={(e) => {e.preventDefault();addVeiculo();}}>
+                        <form onSubmit={(e) => { e.preventDefault(); addVeiculo(); }}>
                             <label>
                                 CHASSI <br/>
                                 <input
@@ -317,11 +333,20 @@ const Veiculos = () => {
                                 </select>
                             </label>
                             <div className="btn">
-                                <button className="voltar" onClick={() => {setAddVeiculo(false);setListaVeiculos(true)}}>VOLTAR</button>
-                                <button className="salvar" type="submit" disabled={loading}>
-                                {loading ? (<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>) : ("SALVAR")}</button>
-                                {error && (<div className="alert alert-danger mt-2">{error}</div>)}
-                            </div>
+        <button className="voltar" onClick={() => {setAddVeiculo(false);setListaVeiculos(true)}}>VOLTAR</button>
+        <button className="salvar" type="submit" disabled={loading}>
+            {loading ? (
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            ) : "SALVAR"}
+        </button>
+        
+        {/* Exibição de erros como string simples */}
+        {error && (
+            <div className="alert alert-danger mt-2">
+                {error}
+            </div>
+        )}
+    </div>
                         </form>
                     </div>
                 )}

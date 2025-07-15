@@ -324,7 +324,7 @@ const Locacao = () => {
                         <button className="editar" onClick={() => {setEncerrarlocacao(true);setInfoloc(false);setListaLocacao(false)}}>ENCERRAR LOCAÇÃO</button>
                         )}
                         <button className="deletar" onClick={() => excluirLocacao(LocacaoSelecionada.cod_loc)}>excluir</button>
-                        </div>
+                       </div>
                     </div>
                 )}
                 {EditLoc && LocacaoSelecionada && (
