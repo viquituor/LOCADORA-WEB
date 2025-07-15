@@ -183,7 +183,7 @@ const Clientes = () => {
                 )}
                 {Addcli && (
                     <div className="add-cli">
-                        <h2>ADICIONE UMA NOVA LOCAÇÃO</h2>
+                        <h2>ADICIONE UMA NOVA CLIENTE</h2>
                         <form onSubmit={criarCliente}>
                             <label>
                                 Nome <br/>

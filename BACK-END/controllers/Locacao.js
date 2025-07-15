@@ -1,4 +1,4 @@
-const Locacao = require('../models/locacao.js');
+const Locacao = require('../models/Locacao.js');
 
 exports.listar = async (req, res, next) => {
   try {
@@ -19,7 +19,6 @@ exports.listar = async (req, res, next) => {
 
 exports.addLocacao = async (req, res, next) => {
   try {
-    console.log("Controller: Adicionando nova locação...");
     const { chassi, habilitacao_cliente, data_inicio } = req.body;
 
     if (!chassi || !habilitacao_cliente || !data_inicio) {
@@ -27,12 +26,11 @@ exports.addLocacao = async (req, res, next) => {
     }
 
     const novaLocacao = await Locacao.adicionar(chassi, habilitacao_cliente, data_inicio);
-    if (!novaLocacao) {
-      return res.status(500).json({ message: 'Erro ao adicionar locação' });
-    }
-    console.log("Controller: Locações adicionada com sucesso:", novaLocacao);
     res.status(201).json(novaLocacao);
   } catch (err) {
+    if (err.message.includes('Veículo já está em uma locação ativa')) {
+      return res.status(400).json({ message: err.message });
+    }
     console.error("Controller - Erro ao adicionar locação:", err);
     next(err);
   }
@@ -40,7 +38,6 @@ exports.addLocacao = async (req, res, next) => {
 
 exports.encerrarLocacao = async (req, res, next) => {
   try {
-    console.log("Controller: Encerrando locação...");
     const { cod_loc, data_termino } = req.body;
 
     if (!cod_loc || !data_termino) {
@@ -49,12 +46,14 @@ exports.encerrarLocacao = async (req, res, next) => {
 
     const locacaoEncerrada = await Locacao.encerrar(cod_loc, data_termino);
     if (!locacaoEncerrada) {
-      return res.status(404).json({ message: 'Locação não encontrada ou já encerrada' });
+      return res.status(400).json({ message: 'Locação não encontrada, já encerrada ou não está aberta' });
     }
     
-    console.log("Controller: Locação encerrada com sucesso:", locacaoEncerrada);
     res.status(200).json(locacaoEncerrada);
   } catch (err) {
+    if (err.message.includes('Locação já está encerrada')) {
+      return res.status(400).json({ message: err.message });
+    }
     console.error("Controller - Erro ao encerrar locação:", err);
     next(err);
   }
@@ -80,7 +79,6 @@ exports.deletarLocacao = async (req, res, next) => {
 
 exports.atualizarLocacao = async (req, res, next) => {
   try {
-    console.log("Controller: Atualizando locação...");
     const { cod_loc } = req.params;
     const { chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao } = req.body;
 
@@ -88,18 +86,11 @@ exports.atualizarLocacao = async (req, res, next) => {
       return res.status(400).json({ message: 'Dados incompletos para atualizar locação' });
     }
 
-    if (situacao === 'ENCERRADO' && !data_termino) {
-      return res.status(400).json({ message: 'Data de término é obrigatória para locações encerradas' });
-    }
-
-    // Se a situação for "Em locação", forçamos data_termino para null
-    const dataTerminoFinal = situacao === 'EM ABERTA' ? null : data_termino;
-
     const locacaoAtualizada = await Locacao.atualizar(cod_loc, {
       chassi_veiculo,
       habilitacao_cliente,
       data_inicio,
-      data_termino: dataTerminoFinal,
+      data_termino,
       situacao
     });
 
@@ -107,9 +98,13 @@ exports.atualizarLocacao = async (req, res, next) => {
       return res.status(404).json({ message: 'Locação não encontrada' });
     }
 
-    console.log("Controller: Locação atualizada com sucesso:", locacaoAtualizada);
     res.status(200).json(locacaoAtualizada);
   } catch (err) {
+    if (err.message.includes('Não é possível reabrir') || 
+        err.message.includes('já está em uma locação ativa') ||
+        err.message.includes('Data de término é obrigatória')) {
+      return res.status(400).json({ message: err.message });
+    }
     console.error("Controller - Erro ao atualizar locação:", err);
     next(err);
   }

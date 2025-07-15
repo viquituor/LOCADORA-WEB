@@ -30,41 +30,59 @@ class Locacao {
   }
 
   static async adicionar(chassi, habilitacao_cliente, data_inicio) {
-    try {
-      console.log("Model: Inserindo nova locação...");
-      const [result] = await pool.query(`
-        INSERT INTO locacao (chassi_veiculo, habilitacao_cliente, data_inicio)
-        VALUES (?, ?, ?)
-      `, [chassi, habilitacao_cliente, data_inicio]);
-      
-      console.log("Model: Locações inserida com sucesso:", result.insertId);
-      return { cod_loc: result.insertId, chassi_veiculo: chassi, habilitacao_cliente, data_inicio };
-    } catch (err) {
-      console.error("Model - Erro ao inserir locação:", err);
-      throw err;
+  try {
+    // Verificar disponibilidade do veículo
+    const veiculoDisponivel = await this.verificarVeiculoDisponivel(chassi);
+    if (!veiculoDisponivel) {
+      throw new Error('Veículo já está em uma locação ativa');
     }
+
+    console.log("Model: Inserindo nova locação...");
+    const [result] = await pool.query(`
+      INSERT INTO locacao (chassi_veiculo, habilitacao_cliente, data_inicio, situacao)
+      VALUES (?, ?, ?, 'EM ABERTO')
+    `, [chassi, habilitacao_cliente, data_inicio]);
+    
+    console.log("Model: Locação inserida com sucesso:", result.insertId);
+    return { 
+      cod_loc: result.insertId, 
+      chassi_veiculo: chassi, 
+      habilitacao_cliente, 
+      data_inicio,
+      situacao: 'EM ABERTO'
+    };
+  } catch (err) {
+    console.error("Model - Erro ao inserir locação:", err);
+    throw err;
+  }
   }
 
   static async encerrar(cod_loc, data_termino) {
-    try {
-      console.log("Model: Encerrando locação...");
-      const [result] = await pool.query(`
-        UPDATE locacao
-        SET data_termino = ?, situacao = 'ENCERRADA'
-        WHERE cod_loc = ?
-      `, [data_termino, cod_loc]);
-      
-      if (result.affectedRows === 0) {
-        console.warn("Model: Nenhuma locação encontrada para encerrar com cod_loc:", cod_loc);
-        return null;
-      }
-      
-      console.log("Model: Locação encerrada com sucesso:", cod_loc);
-      return { cod_loc, data_termino, situacao: 'ENCERRADA' };
-    } catch (err) {
-      console.error("Model - Erro ao encerrar locação:", err);
-      throw err;
+  try {
+    // Verificar se a locação está aberta
+    const locacaoAberta = await this.verificarLocacaoAberta(cod_loc);
+    if (!locacaoAberta) {
+      throw new Error('Locação já está encerrada ou não existe');
     }
+
+    console.log("Model: Encerrando locação...");
+    const [result] = await pool.query(`
+      UPDATE locacao
+      SET data_termino = ?, situacao = 'ENCERRADA'
+      WHERE cod_loc = ? AND situacao = 'EM ABERTO'
+    `, [data_termino, cod_loc]);
+    
+    if (result.affectedRows === 0) {
+      console.warn("Model: Nenhuma locação aberta encontrada para encerrar com cod_loc:", cod_loc);
+      return null;
+    }
+    
+    console.log("Model: Locação encerrada com sucesso:", cod_loc);
+    return { cod_loc, data_termino, situacao: 'ENCERRADA' };
+  } catch (err) {
+    console.error("Model - Erro ao encerrar locação:", err);
+    throw err;
+  }
   }
 
   static async deletar(cod_loc) {
@@ -90,54 +108,93 @@ class Locacao {
 
   static async atualizar(cod_loc, dados) {
   try {
-    console.log("Model: Atualizando locação...");
     const { chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, situacao } = dados;
     
+    // Verificar se está tentando mudar para EM ABERTO uma locação ENCERRADA
+    const [currentLoc] = await pool.query('SELECT situacao FROM locacao WHERE cod_loc = ?', [cod_loc]);
+    if (currentLoc[0].situacao === 'ENCERRADA' && situacao === 'EM ABERTO') {
+      throw new Error('Não é possível reabrir uma locação encerrada');
+    }
+
+    // Verificar disponibilidade do veículo se estiver mudando o veículo
+    if (currentLoc[0].chassi_veiculo !== chassi_veiculo) {
+      const veiculoDisponivel = await this.verificarVeiculoDisponivel(chassi_veiculo);
+      if (!veiculoDisponivel) {
+        throw new Error('Novo veículo já está em uma locação ativa');
+      }
+    }
+
+    // Se mudando para ENCERRADA, verificar data_termino
+    if (situacao === 'ENCERRADA' && !data_termino) {
+      throw new Error('Data de término é obrigatória para locações encerradas');
+    }
+
+    // Atualização principal
     const [result] = await pool.query(`
       UPDATE locacao
       SET 
         chassi_veiculo = ?, 
         habilitacao_cliente = ?, 
         data_inicio = ?, 
-        data_termino = ?
+        data_termino = ?,
+        situacao = ?
       WHERE cod_loc = ?
-    `, [chassi_veiculo, habilitacao_cliente, data_inicio, data_termino, cod_loc]);
+    `, [
+      chassi_veiculo, 
+      habilitacao_cliente, 
+      data_inicio, 
+      situacao === 'EM ABERTO' ? null : data_termino,
+      situacao,
+      cod_loc
+    ]);
     
     if (result.affectedRows === 0) {
       console.warn("Model: Nenhuma locação encontrada para atualizar com cod_loc:", cod_loc);
       return null;
     }
 
-    if(situacao === 'ENCERRADA' && !data_termino) {
-      console.warn("Model: Data de término é obrigatória para locações encerradas.");
-      throw new Error("Data de término é obrigatória para locações encerradas.");
-    }
-    if(situacao === 'EM ABERTO') {
-      const [resultSituacao] = await pool.query(`
-        UPDATE locacao
-        SET situacao = 'Em ABERTO', data_termino = NULL
-        WHERE cod_loc = ?
-      `, [cod_loc]);
-      data_termino = null;
-    }
-    
-    // Retornar os dados atualizados, mostrando "Em aberto" se data_termino for null
-    const locacaoAtualizada = {
+    console.log("Model: Locação atualizada com sucesso:", cod_loc);
+    return {
       cod_loc,
       chassi_veiculo,
       habilitacao_cliente,
       data_inicio,
-      data_termino: data_termino || 'Em aberto',
+      data_termino: situacao === 'EM ABERTO' ? null : data_termino,
       situacao
     };
-    
-    console.log("Model: Locações atualizada com sucesso:", locacaoAtualizada);
-    return locacaoAtualizada;
   } catch (err) {
     console.error("Model - Erro ao atualizar locação:", err);
     throw err;
   }
-}
-}
+  }
 
+  static async verificarVeiculoDisponivel(chassi) {
+  try {
+    const [results] = await pool.query(`
+      SELECT cod_loc FROM locacao 
+      WHERE chassi_veiculo = ? AND situacao = 'EM ABERTO'
+    `, [chassi]);
+    
+    return results.length === 0; // Retorna true se o veículo estiver disponível
+  } catch (err) {
+    console.error("Erro ao verificar disponibilidade do veículo:", err);
+    throw err;
+  }
+  }
+
+  static async verificarLocacaoAberta(cod_loc) {
+  try {
+    const [results] = await pool.query(`
+      SELECT cod_loc FROM locacao 
+      WHERE cod_loc = ? AND situacao = 'EM ABERTO'
+    `, [cod_loc]);
+    
+    return results.length > 0; // Retorna true se a locação estiver aberta
+  } catch (err) {
+    console.error("Erro ao verificar status da locação:", err);
+    throw err;
+  }
+  }
+
+}
 module.exports = Locacao;

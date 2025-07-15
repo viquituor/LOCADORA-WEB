@@ -92,6 +92,10 @@ footer{
     height: 7vh;
 }
 
+input:invalid, select:invalid {
+  border: 2px solid #ff6b6b;
+}
+
 button{cursor: pointer;}
 .salvar:hover{color: #218f52;}
 .voltar:hover{color: #b6786f;}

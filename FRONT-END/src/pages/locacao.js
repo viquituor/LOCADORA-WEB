@@ -85,6 +85,12 @@ const Locacao = () => {
       }, []);
 
     useEffect(() => {
+  if (formData.situacao === 'EM ABERTO') {
+    setFormData(prev => ({...prev, data_termino: ''}));
+  }
+      }, [formData.situacao]);
+
+    useEffect(() => {
   if (busca.trim() === '') {
     setlocacaoFiltradas(Locacao);
   } else {
@@ -113,26 +119,30 @@ const Locacao = () => {
     });
     setlocacaoFiltradas(filtered);
   }
-}, [busca, Locacao]);
+      }, [busca, Locacao]);
 
     const AdicionarLocacao = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios.post('http://localhost:3001/locacoes', {...formData});
-            alert("Locação adicionada com sucesso:", response.data);
-            const loc = await axios.get('http://localhost:3001/locacoes');
-            setLocacoes(loc.data);
-            setAddLocacao(false);
-            setListaLocacao(true);
-        } catch (error) {
-            console.error("Erro ao adicionar locação:", error);
-            setError("Erro ao adicionar locação. Verifique os dados e tente novamente.");
-        } finally {
-            setLoading(false);
-        }
-    };
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
+  try {
+    if (!formData.chassi || !formData.habilitacao_cliente || !formData.data_inicio) {
+      throw new Error('Preencha todos os campos obrigatórios');
+    }
+    
+    const response = await axios.post('http://localhost:3001/locacoes', {...formData});
+    alert("Locação adicionada com sucesso!", response.data);
+    const loc = await axios.get('http://localhost:3001/locacoes');
+    setLocacoes(loc.data);
+    setAddLocacao(false);
+    setListaLocacao(true);
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || error.message || "Erro ao adicionar locação";
+    setError(errorMsg);
+  } finally {
+    setLoading(false);
+  }
+};
 
     const EncerrarLoc = async (e) => {
         e.preventDefault();
@@ -173,29 +183,38 @@ const Locacao = () => {
     };
 
     const atualizarLocacao = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios.put(`http://localhost:3001/locacoes/${LocacaoSelecionada.cod_loc}`, {
-                chassi_veiculo: formData.chassi,
-                habilitacao_cliente: formData.habilitacao_cliente,
-                data_inicio: formData.data_inicio,
-                data_termino: formData.data_termino,
-                situacao: formData.situacao
-            });
-            alert("Locação atualizada com sucesso!", response.data);
-            const loc = await axios.get('http://localhost:3001/locacoes');
-            setLocacoes(loc.data);
-            setEditLoc(false);
-            setListaLocacao(true);
-        } catch (error) {
-            console.error("Erro ao atualizar locação:", error);
-            setError("Erro ao atualizar locação. Verifique os dados e tente novamente.");
-        } finally {
-            setLoading(false);
-        }
-    };
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
+  try {
+    if (!formData.chassi || !formData.habilitacao_cliente || !formData.data_inicio || !formData.situacao) {
+      throw new Error('Preencha todos os campos obrigatórios');
+    }
+    
+    if (formData.situacao === 'ENCERRADA' && !formData.data_termino) {
+      throw new Error('Data de término é obrigatória para locações encerradas');
+    }
+
+    const response = await axios.put(`http://localhost:3001/locacoes/${LocacaoSelecionada.cod_loc}`, {
+      chassi_veiculo: formData.chassi,
+      habilitacao_cliente: formData.habilitacao_cliente,
+      data_inicio: formData.data_inicio,
+      data_termino: formData.situacao === 'EM ABERTO' ? null : formData.data_termino,
+      situacao: formData.situacao
+    });
+    
+    alert("Locação atualizada com sucesso!", response.data);
+    const loc = await axios.get('http://localhost:3001/locacoes');
+    setLocacoes(loc.data);
+    setEditLoc(false);
+    setListaLocacao(true);
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || error.message || "Erro ao atualizar locação";
+    setError(errorMsg);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="container">
@@ -300,8 +319,10 @@ const Locacao = () => {
                         <p><strong>MARCA</strong><br/>  {LocacaoSelecionada.marca}</p>
                         <p><strong>PLACA</strong> <br/> {LocacaoSelecionada.placa}</p>
                         <div className="botoes">
-                        <button className="voltar"  onClick={() => {setInfoloc(false);setListaLocacao(true)}}>VOLTAR</button>
-                        <button className="editar"  onClick={() => {setEncerrarlocacao(true);setInfoloc(false);setListaLocacao(false)}}>ENCERRAR LOCAÇÃO</button>
+                        <button className="voltar" onClick={() => {setInfoloc(false);setListaLocacao(true)}}>VOLTAR</button>
+                        {LocacaoSelecionada.situacao === 'EM ABERTO' && (
+                        <button className="editar" onClick={() => {setEncerrarlocacao(true);setInfoloc(false);setListaLocacao(false)}}>ENCERRAR LOCAÇÃO</button>
+                        )}
                         <button className="deletar" onClick={() => excluirLocacao(LocacaoSelecionada.cod_loc)}>excluir</button>
                         </div>
                     </div>
